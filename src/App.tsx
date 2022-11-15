@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState} from "react";
 import { Table, Form, Upload, Modal } from "antd";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -11,7 +11,7 @@ function bytesToSize(bytes: any) {
 }
 
 const fetchData = async () => {
-  const result = await axios.get("http://localhost:5000/api/allFiles");
+  const result = await axios.get("http://localhost:5000/api/getFiles");
   return await result.data.data;
 };
 
@@ -20,7 +20,7 @@ function App() {
 
   const Delete = async (record: any) => {
     console.log(record);
-    await axios.delete(`http://localhost:5000/api/removeFile/${record.id}`);
+    await axios.delete(`http://localhost:5000/api/deleteFile/${record.id}`);
     const result = await fetchData();
     setData(result);
   };
@@ -94,7 +94,7 @@ function App() {
 
     formData.append("file", values.file);
     try {
-      await axios.post("http://localhost:5000/api/saveFile", formData);
+      await axios.post("http://localhost:5000/api/uploadFile", formData);
       const result = await fetchData();
       setData(result);
     } catch (error) {
@@ -119,37 +119,40 @@ function App() {
   }, []);
 
   return (
+
     <div className="App">
+      <h2>File Uploader</h2>
       <Form
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
-        layout="horizontal"
+        layout="vertical"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         style={{ margin: "50px 10rem" }}
       >
         <Form.Item
-          label="Upload File"
+          label="Upload"
           valuePropName="fileList"
           style={{
-            width: "8%",
+            width: "20%",
             padding: "5px 15px",
-            border: "1px solid #d9d9d9",
+            border: "1px solid #1F8130",
             cursor: "pointer",
           }}
         >
-          <Upload customRequest={onFinish} listType="picture-card">
+          <Upload customRequest={onFinish} listType="picture">
             <div>
-              <PlusOutlined style={{ marginTop: "15px" }} />
-              <div style={{ marginTop: 8 }}></div>
+              <PlusOutlined style={{ marginTop: "20px" }} />
+              <div style={{ marginTop: 3 }}></div>
             </div>
           </Upload>
         </Form.Item>
       </Form>
-      <div className="table" style={{ margin: "50px 100px" }}>
+      <div className="table" style={{ margin: "100px 200px" }}>
         <Table dataSource={Data} columns={columns} pagination={false} rowKey="id" />
       </div>
     </div>
+
   );
 }
 
